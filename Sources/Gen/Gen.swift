@@ -1,5 +1,5 @@
 /// A composable, transformable context for generating random values.
-public struct Gen<Value: Sendable>: Sendable {
+public struct Gen<Value>: Sendable {
   @usableFromInline
   internal var _run: @Sendable (inout AnyRandomNumberGenerator) -> Value
 
@@ -39,8 +39,8 @@ extension Gen {
   /// - Parameter value: A constant value.
   /// - Returns: A generator of a constant value.
   @inlinable
-  public static func always(_ value: Value) -> Gen {
-    return Gen { _ in value }
+  public static func always(_ value: @autoclosure @escaping @Sendable () -> Value) -> Gen {
+    return Gen { _ in value() }
   }
 
   /// Transforms a generator of `Value`s into a generator of `NewValue`s by applying a transformation.
